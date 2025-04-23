@@ -4,7 +4,6 @@ import io
 import requests
 import discord
 
-
 load_dotenv()
 
 token = os.environ.get('TOKEN')
@@ -21,15 +20,13 @@ class MyClient(discord.Client):
             print(f'Found medal link: {message.content}')
             file = download_medal_clip(message.content)
             if file:
-                print(f'Sending medal clip...')
-                with open('output.mp4', 'wb') as f:
-                    f.write(file.getbuffer())
+                print(f'Sending medal clip from {message.author}.')
                 await message.channel.send(file=discord.File(file, 'output.mp4'))
-            
+           
         
         # print(f'Message from {message.author}: {message.content}')
 
-def download_medal_clip(url):
+def download_medal_clip(url) -> io.BytesIO:
         url = url.strip()
         if not url:
             print('Invalid URL')
@@ -57,6 +54,7 @@ def download_medal_clip(url):
                     for chunk in response.iter_content(chunk_size=1024 * 1024):  # 1 MB chunks
                         if chunk:
                            file.write(chunk)
+                file.seek(0) # Go back to the start of the file as to read from it in the correct order
                 return file
             else:
                 print('Error: Most likely, direct link download does not exist')
@@ -69,6 +67,7 @@ def download_medal_clip(url):
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.messages = True
 
 client = MyClient(intents=intents)
 client.run(token)
