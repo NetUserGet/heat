@@ -12,13 +12,26 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         if message.author == self.user:
             return
+
+        content = message.content
         
-        if 'https://medal.tv/' in message.content:
-            print(f'Found medal link: {message.content}')
-            file = download_medal_clip(message.content)
+        if 'https://medal.tv/' in content:
+            # Splits by whitespace then checks which item contains the medal link, only downside being that it breaks on the first link it sees.
+            for item in content.split(" "):
+                if 'https://medal.tv/' in item:
+                    link = item
+                    break;
+
+            print(f'Found medal link: {link}')
+            file = download_medal_clip(link)
             if file:
                 print(f'Sending medal clip from {message.author}.')
-                await message.channel.send(file=discord.File(file, 'output.mp4'))
+                try:
+                    await message.channel.send(file=discord.File(file, 'output.mp4'))
+                    file.close()
+                except discord.HTTPException as e:
+                    await message.channel.send(f'Could not upload file due to {e}!')
+                    file.close()
            
         
         # print(f'Message from {message.author}: {message.content}')
