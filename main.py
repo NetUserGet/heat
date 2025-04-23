@@ -1,12 +1,9 @@
 from dotenv import load_dotenv
+from sys import exit
 import os
 import io
 import requests
 import discord
-
-load_dotenv()
-
-token = os.environ.get('TOKEN')
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -64,7 +61,24 @@ def download_medal_clip(url) -> io.BytesIO:
             return None
  
 
-if __name == '__main__':
+if __name__ == '__main__':
+    
+    if os.path.exists('.env') == False:
+        print('No .env file found, creating .env file')
+        try:
+            with open('.env', 'w') as f:
+                f.write("TOKEN=TOKENGOESHERE")
+        except OSError as e:
+            print(f'Cannot write .env file, because {e}!')
+            exit(1)
+        print('Paste your token where "TOKENGOESHERE" is then run main.py again to start the bot.')
+        exit(1)
+
+    load_dotenv()
+    
+    token = os.environ.get('TOKEN')
+
+
     intents = discord.Intents.default()
     intents.message_content = True
     intents.messages = True
