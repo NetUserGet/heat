@@ -64,10 +64,10 @@ def download_medal_clip(url) -> io.BytesIO:
             return None
  
 
-
-intents = discord.Intents.default()
-intents.message_content = True
-intents.messages = True
-
-client = MyClient(intents=intents)
-client.run(token)
+if __name == '__main__':
+    intents = discord.Intents.default()
+    intents.message_content = True
+    intents.messages = True
+    
+    client = MyClient(intents=intents)
+    client.run(token)

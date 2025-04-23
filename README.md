@@ -9,6 +9,8 @@ source bin/activate
 # or if you're on windows
 # ./bin/activate.ps1
 pip install -r requirements.txt
+# Once you want to run the bot it is a simple
+python3 main.py
 ```
 
 
